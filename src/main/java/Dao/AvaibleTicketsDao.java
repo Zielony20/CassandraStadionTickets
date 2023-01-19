@@ -22,12 +22,14 @@ public class AvaibleTicketsDao extends CassandraTable{
                 .append(matchid).append(",'")
                 .append(sector).append("',")
                 .append(placeList)
-                //.append(counter).append("','")
                 .append(");")
-                .toString();
+                .toString()
+                // Set casting to string is in [] in deafult we need {}
+                .replace("[", "{").replace("]", "}");
         StatsManager.getInstance().queryLog(query);
         session.execute(query);
     }
+
     public void create(AvaibleTickets at){
         String query = new StringBuilder("INSERT INTO ")
                 .append("AvaibleTickets ( matchid, sector, placeList )")
@@ -60,7 +62,7 @@ public class AvaibleTicketsDao extends CassandraTable{
 
         String query = new StringBuilder("UPDATE AvaibleTickets SET  ")
                 //.append("available = ").append("available - 1, ")
-                .append("placeList = placeList - [").append(place).append("]")
+                .append("placeList = placeList - {").append(place).append("}")
                 .append(" WHERE ")
                 .append(" matchid = ").append(matchid)
                 .append(" and sector = '").append(sector)

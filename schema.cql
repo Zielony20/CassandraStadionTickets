@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS srds.Tickets
     name text,
     surname text,
     email text,
-    PRIMARY KEY ((matchid),sector,place)
+    PRIMARY KEY ((matchid),sector,place, userid)
 );
 
 CREATE TABLE IF NOT EXISTS srds.ReservedTicketByUser

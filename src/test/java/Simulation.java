@@ -17,8 +17,8 @@ import java.util.concurrent.ThreadLocalRandom;
 //kubectl exec -it srds-cassandra-0 -- nodetool removenode "Host ID"
 public class Simulation {
 
-    private static final int NUMBER_OF_CUSTOMERS = 2000;
-    static String ipaddr = "127.0.0.1"; //"192.168.3.4";
+    private static final int NUMBER_OF_CUSTOMERS = 5000;
+    static String ipaddr = "127.0.0.1";
     static String namespace = "srds";
     static CassandraConnector cc = new CassandraConnector();
 

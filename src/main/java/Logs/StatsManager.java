@@ -1,5 +1,8 @@
 package Logs;
 
+import com.datastax.driver.core.ConsistencyLevel;
+
+import java.time.Duration;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,17 +62,22 @@ public class StatsManager {
     }
 
     public void summorize(){
+
+        long timeNanoSeconds = stopTimer();
         System.out.println("");
         System.out.println("Prób rezerwacji: "+reservationRetries);
         System.out.println("Udane rezerwacje: "+reservationSuccess);
         System.out.println("Nieudane rezerwacje: "+(reservationFail+reservationFailBecauseFull));
-
         System.out.println("Nieudane rezerwacje przez konflikt rezerwacji: "+reservationFail);
         System.out.println("Nieudane rezerwacje bo na starcie nie było wolnych biletów: "+reservationFailBecauseFull);
-
         System.out.println("Wykonane polecenia InsertTicket: "+insertIntoTickets);
         System.out.println("Wykonane polecenia InsertReservation: "+insertIntoTicketsReservation);
-        System.out.println("Czas: "+stopTimer());
+        System.out.println("Czas (ns): "+timeNanoSeconds);
+        long duration = timeNanoSeconds / 1_000_000_000;  //convert nanoseconds to seconds
+        Duration timeElapsed = Duration.ofSeconds(duration);
+        long minutes = timeElapsed.toMinutes();
+        long seconds = timeElapsed.getSeconds() % 60;
+        System.out.println(String.format("Czas (MM:SS): %02d:%02d", minutes, seconds));
 
     }
 

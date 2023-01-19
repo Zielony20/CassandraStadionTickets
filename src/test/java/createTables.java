@@ -1,4 +1,5 @@
 import Dao.CassandraTable;
+import Logs.StatsManager;
 import com.datastax.driver.core.ConsistencyLevel;
 
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class createTables {
         cc.connect(ipaddr,9042,namespace, ConsistencyLevel.QUORUM);
 
         CassandraTable ct = new CassandraTable(cc.getSession());
-
+        StatsManager.getInstance().setQueryLogs(true);
         ct.dropMatch();
         ct.dropTicket();
         ct.dropAvaibleTickets();

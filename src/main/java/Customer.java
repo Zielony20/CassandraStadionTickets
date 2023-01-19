@@ -45,8 +45,8 @@ public class Customer implements Runnable {
         }
 
         //Dostępne bilety
-        List<Integer> avaiblePlaces = dbManager.getAvaibleTicketsDao()
-                .getAvaibleTickets(match,sector).one().getList("placeList",Integer.class);
+        List<Integer> avaiblePlaces = new ArrayList<>( dbManager.getAvaibleTicketsDao()
+                .getAvaibleTickets(match,sector).one().getSet("placeList",Integer.class) );
 
         //Miejsca zarezerwowane przez innych użytkowników ale jeszcze nie kupione
         List<Integer> currentReserved = dbManager.getReservationsDao()
@@ -136,3 +136,4 @@ public class Customer implements Runnable {
         Thread.sleep(delay);
     }
 }
+
