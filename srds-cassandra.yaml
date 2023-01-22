@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: srds-cassandra
+  name: srds-cassandra
+spec:
+  clusterIP: None
+  ports:
+  - port: 9042
+  selector:
+    app: srds-cassandra
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: srds-cassandra
+  labels:
+    app: srds-cassandra
+spec:
+  serviceName: srds-cassandra
+  replicas: 4
+  selector:
+    matchLabels:
+      app: srds-cassandra
+      #interface: srds-cassandra
+  template:
+    metadata:
+      labels:
+        app: srds-cassandra
+        #interface: srds-cassandra
+    spec:
+      #terminationGracePeriodSeconds: 1800
+      containers:
+      - name: srds-cassandra
+        image: cassandra:3.11
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 7000
+          name: intra-node
+        - containerPort: 7001
+          name: tls-intra-node
+        - containerPort: 7199
+          name: jmx
+        - containerPort: 9042
+          name: cql
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 1Gi
+          requests:
+            cpu: "500m"
+            memory: 1Gi
+        env:
+          - name: MAX_HEAP_SIZE
+            value: 512M
+          - name: HEAP_NEWSIZE
+            value: 100M
+          - name: CASSANDRA_SEEDS
+            value: "srds-cassandra-0.srds-cassandra.default.svc.cluster.local"
+          - name: CASSANDRA_CLUSTER_NAME
+            value: "Cassandra"
+          - name: CASSANDRA_DC
+            value: "DC1"
+          - name: CASSANDRA_RACK
+            value: "Rack1"
+          - name: CASSANDRA_ENDPOINT_SNITCH
+            value: GossipingPropertyFileSnitch
+
+        volumeMounts:
+        - name: srds-cassandra-data
+          mountPath: /var/lib/srds-cassandra/data #/srds-cassandra_data
+  volumeClaimTemplates:
+  - metadata:
+      name: srds-cassandra-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

@@ -131,7 +131,7 @@ public class Customer implements Runnable {
         Thread.sleep(2000);
     }
     private void randomDelay() throws InterruptedException {
-        int delay = ThreadLocalRandom.current().nextInt(10000);
+        int delay = ThreadLocalRandom.current().nextInt(3000);
 
         Thread.sleep(delay);
     }

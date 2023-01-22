@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class createTables {
-    static String ipaddr = "127.0.0.1"; //"192.168.3.4";   //
+    static String ipaddr = "127.0.0.1";
     static String namespace = "srds";
 
     public static void main(String[] args) {
@@ -18,7 +18,7 @@ public class createTables {
         cc.connect(ipaddr,9042,namespace, ConsistencyLevel.QUORUM);
 
         CassandraTable ct = new CassandraTable(cc.getSession());
-        StatsManager.getInstance().setQueryLogs(true);
+        StatsManager.getInstance().setQueryLogs(false);
         ct.dropMatch();
         ct.dropTicket();
         ct.dropAvaibleTickets();

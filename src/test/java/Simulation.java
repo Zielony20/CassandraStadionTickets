@@ -6,30 +6,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-// Trzeba w minikube wydać polecenie
-// kubectl exec -it cqlsh -- /bin/bash
-// cqlsh srds-cassandra-0.srds-cassandra
-// cqlsh srds-cassandra-1.srds-cassandra
-// kubectl port-forward service/srds-cassandra 9042:9042
-//awaria:
-//minikube kubectl -- scale statefulset srds-cassandra --replicas=2
-//kubectl exec -it srds-cassandra-0 -- nodetool status
-//kubectl exec -it srds-cassandra-0 -- nodetool removenode "Host ID"
+
 public class Simulation {
 
     private static final int NUMBER_OF_CUSTOMERS = 5000;
     static String ipaddr = "127.0.0.1";
     static String namespace = "srds";
+    static ConsistencyLevel consistencyLevel = ConsistencyLevel.QUORUM;
     static CassandraConnector cc = new CassandraConnector();
-
-    
 
     public static void main(String[] args) {
 
-        cc.connect(ipaddr,9042,namespace, ConsistencyLevel.QUORUM);
+        cc.connect(ipaddr,9042,namespace, consistencyLevel);
         dbManager dbManager = new dbManager(cc.getSession());
         StatsManager.getInstance().setQueryLogs(false);
-        StatsManager.getInstance().startTimer();
+
 
         List<Customer> customers = runCustomers(dbManager);
 
@@ -51,6 +42,7 @@ public class Simulation {
             customers.add(c);
         }
         System.out.println("Czas zakupów");
+        StatsManager.getInstance().startTimer();
 
         for (int i = 0; i < NUMBER_OF_CUSTOMERS; i++) {
             Thread t = new Thread(customers.get(i));
